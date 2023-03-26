@@ -8,7 +8,7 @@ const TestPage2 = () => {
         color: 'white',
       }}
     >
-      ของใหม่นะ
+      ของใหม่นะจ๊ะ
     </div>
   );
 };
