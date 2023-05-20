@@ -1,15 +1,13 @@
+import { Outlet } from 'react-router-dom';
 import { Navbar } from '@Components/navbar';
-import { genRoutes, RouteData } from '../../routes/routes';
+import { navlist } from '@Components/navbar/itemList';
+import { PropsWithChildren } from 'react';
 
-type Props = {
-  initialRoutes: RouteData[];
-};
-
-const MainLayout: React.FC<Props> = ({ initialRoutes }: Props) => {
+const MainLayout = ({ children }: PropsWithChildren) => {
   return (
     <div style={{ height: '100vh', display: 'flex' }}>
-      <Navbar initialRoutes={initialRoutes} />
-      {genRoutes(initialRoutes)}
+      <Navbar navList={navlist} />
+      {children || <Outlet />}
     </div>
   );
 };

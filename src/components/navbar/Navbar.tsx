@@ -13,7 +13,6 @@ import { IconSwitchHorizontal, IconLogout } from '@tabler/icons-react';
 import config from '@Config';
 import { useNavigate } from 'react-router-dom';
 import ppLogo from '../../assets/logo/pp-logo.jpg';
-import { RouteData } from '../../routes/routes';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -115,16 +114,22 @@ const NavItem: React.FC<NavItemProps> = ({
   );
 };
 
+export interface INavList {
+  label: string;
+  path: string;
+  icon: React.ComponentType;
+}
+
 type NavbarProps = {
-  initialRoutes: RouteData[];
+  navList: INavList[];
 };
 
-const Navbar: React.FC<NavbarProps> = ({ initialRoutes }: NavbarProps) => {
+const Navbar = ({ navList }: NavbarProps) => {
   const { classes } = useStyles();
-  const [active, setActive] = useState(initialRoutes[0].label || '');
+  const [active, setActive] = useState(navList[0].label || '');
   const navigate = useNavigate();
 
-  const links = initialRoutes.map((route) => (
+  const links = navList.map((route) => (
     <NavItem
       key={route.label}
       link={route.path}

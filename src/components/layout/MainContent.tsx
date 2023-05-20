@@ -12,6 +12,7 @@ const MainContent: React.FC<Props> = ({ title, children }: Props) => {
       <div>{title}</div>
       <Divider my="sm" />
       {children}
+      <Divider my="sm" />
       <div>footer</div>
     </Container>
   );
