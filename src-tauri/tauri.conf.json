@@ -12,13 +12,21 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "all": true,
       "shell": {
         "all": false,
         "open": true
       }
     },
     "bundle": {
+      "windows": {
+        "webviewInstallMode": {
+          "type": "downloadBootstrapper"
+        },
+        "wix": {
+          "language": "en-US"
+        }
+      },
       "active": true,
       "icon": [
         "icons/32x32.png",
@@ -27,8 +35,11 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
-      "targets": "all"
+      "identifier": "com.ppmanager.dev",
+      "targets": "msi",
+      "copyright": "Nontawat.N",
+      "category": "Utility",
+      "publisher": "nont"
     },
     "security": {
       "csp": null
