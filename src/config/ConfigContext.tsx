@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
 import appConfig from './appConfig';
 
 interface IAppConfig {
@@ -7,11 +7,30 @@ interface IAppConfig {
 
 const AppConfigContext = createContext<IAppConfig>(appConfig);
 
-const AppConfigProvider = ({ children }: PropsWithChildren) => (
-  <AppConfigContext.Provider value={appConfig}>
-    {children}
-  </AppConfigContext.Provider>
-);
+const disableContextMenu = (e: Event) => {
+  e.preventDefault();
+};
+
+const AppConfigProvider = ({ children }: PropsWithChildren) => {
+  useEffect(() => {
+    const { enabled, hostname } = appConfig.contextMemu;
+    if (enabled || !hostname.includes(window.location.hostname)) {
+      return;
+    }
+    document.addEventListener('contextmenu', disableContextMenu);
+
+    // cleanup this component
+    return () => {
+      document.removeEventListener('contextmenu', disableContextMenu);
+    };
+  }, []);
+
+  return (
+    <AppConfigContext.Provider value={appConfig}>
+      {children}
+    </AppConfigContext.Provider>
+  );
+};
 
 export const useAppConfig = () => {
   const config = useContext(AppConfigContext);
