@@ -1,12 +1,12 @@
 import MainLayout from '@Components/layout/MainLayout';
 import { MantineProvider } from '@mantine/core';
 import { MemoryRouter } from 'react-router-dom';
-
-import { navlist } from '@Components/navbar/itemList';
 import AppConfigProvider from './config/ConfigContext';
 import Routes from './routes/AppRoutes';
+import { useAppConfig } from './config/ConfigContext';
 
 const App = () => {
+  const { initPath } = useAppConfig();
   return (
     <AppConfigProvider>
       <MantineProvider
@@ -14,7 +14,7 @@ const App = () => {
         withGlobalStyles
         withNormalizeCSS
       >
-        <MemoryRouter initialEntries={[navlist[0].path]}>
+        <MemoryRouter initialEntries={[initPath]}>
           <MainLayout>
             <Routes />
           </MainLayout>

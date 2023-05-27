@@ -18,7 +18,8 @@
     "paths": {
       "@Components/*": ["./src/components/*"],
       "@Config": ["./src/appConfig.ts"],
-      "@Pages/*": ["./src/pages/*"]
+      "@Pages/*": ["./src/pages/*"],
+      "@Utils/*": ["./src/utils/*"]
     }
   },
   "include": [".eslintrc.cjs", "src"],
