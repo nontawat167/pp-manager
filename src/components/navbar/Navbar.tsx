@@ -10,9 +10,9 @@ import {
   Avatar,
 } from '@mantine/core';
 import { IconSwitchHorizontal, IconLogout } from '@tabler/icons-react';
-import config from '@Config';
 import { useNavigate } from 'react-router-dom';
 import ppLogo from '../../assets/logo/pp-logo.jpg';
+import { useAppConfig } from '../../config/ConfigContext';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -125,8 +125,9 @@ type NavbarProps = {
 };
 
 const Navbar = ({ navList }: NavbarProps) => {
+  const { initPath, version } = useAppConfig();
   const { classes } = useStyles();
-  const [active, setActive] = useState(navList[0].label || '');
+  const [active, setActive] = useState(initPath || '');
   const navigate = useNavigate();
 
   const links = navList.map((route) => (
@@ -135,11 +136,11 @@ const Navbar = ({ navList }: NavbarProps) => {
       link={route.path}
       label={route.label}
       icon={route.icon}
-      active={route.label === active}
+      active={route.path === active}
       onClick={(e) => {
         e.preventDefault();
+        setActive(route.path);
         navigate(route.path);
-        setActive(route.label);
       }}
     />
   ));
@@ -148,7 +149,7 @@ const Navbar = ({ navList }: NavbarProps) => {
       <MNavbar.Section grow>
         <Group className={classes.header} position="apart">
           <Avatar src={ppLogo} />
-          <Code sx={{ fontWeight: 700 }}>{config.appVersion}</Code>
+          <Code sx={{ fontWeight: 700 }}>{version}</Code>
         </Group>
         {links}
       </MNavbar.Section>
