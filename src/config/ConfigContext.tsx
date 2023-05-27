@@ -1,11 +1,9 @@
 import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
 import appConfig from './appConfig';
 
-interface IAppConfig {
-  version: string;
-}
+type AppConfig = typeof appConfig;
 
-const AppConfigContext = createContext<IAppConfig>(appConfig);
+const AppConfigContext = createContext<AppConfig>(appConfig);
 
 const disableContextMenu = (e: Event) => {
   e.preventDefault();
@@ -24,7 +22,6 @@ const AppConfigProvider = ({ children }: PropsWithChildren) => {
       document.removeEventListener('contextmenu', disableContextMenu);
     };
   }, []);
-
   return (
     <AppConfigContext.Provider value={appConfig}>
       {children}
