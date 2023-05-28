@@ -1,31 +1,35 @@
-import { Checkbox, Table } from '@mantine/core';
+import { Table } from '@mantine/core';
 import { dateParse } from '@Utils/date';
+import { Sku } from '@Service/types/sku';
 import { useAppConfig } from '../../config/ConfigContext';
 
-interface prop {
-  elements: skuData[];
+interface Prop {
+  elements: Sku[] | null;
 }
 
-interface skuData {
-  id: string;
-  createdAt: string;
-  updateAt: string;
-  name: string;
-  price: number;
-  type: string;
-}
+// interface SkuData {
+//   id: string;
+//   createdAt: string;
+//   updateAt: string;
+//   name: string;
+//   price: number;
+//   type: string;
+// }
 
-const TableLists = ({ elements }: prop) => {
+const TableLists = ({ elements }: Prop) => {
   const { dateFormat } = useAppConfig();
-  const rows = elements.map((element) => (
-    <tr key={element.id}>
-      <td>{element.name}</td>
-      <td>{element.price}</td>
-      <td>{element.type}</td>
-      <td>{dateParse(element.createdAt,dateFormat)}</td>
-      <td>{dateParse(element.updateAt,dateFormat)}</td>
-    </tr>
-  ));
+  const rows =
+    elements === null
+      ? []
+      : elements.map((element) => (
+          <tr key={element.id}>
+            <td>{element.name}</td>
+            <td>{Number(element.price)}</td>
+            <td>{element.type}</td>
+            <td>{dateParse(element.createdAt, dateFormat)}</td>
+            <td>{dateParse(element.updatedAt, dateFormat)}</td>
+          </tr>
+        ));
 
   return (
     <div style={{ width: '100%' }}>
