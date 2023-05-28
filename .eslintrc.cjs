@@ -19,12 +19,14 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
+  ignorePatterns: ['**/service/types/**/*.ts'],
   rules: {
     'import/prefer-default-export': 0,
     'react/react-in-jsx-scope': 0,
     'react/jsx-props-no-spreading': 0,
     '@typescript-eslint/no-explicit-any': 0,
     'consistent-return': 0,
+    'react-hooks/exhaustive-deps': 0,
     'react/function-component-definition': [
       2,
       {
