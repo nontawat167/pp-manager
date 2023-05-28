@@ -4,7 +4,12 @@
 mod command;
 mod store;
 mod tauriop;
+mod ipc;
+mod error;
+mod usecase;
+mod model;
 
+pub use error::{Error, Result};
 use store::prepare_database;
 use tauriop::create_builder;
 
