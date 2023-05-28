@@ -19,7 +19,8 @@
       "@Components/*": ["./src/components/*"],
       "@Config": ["./src/appConfig.ts"],
       "@Pages/*": ["./src/pages/*"],
-      "@Utils/*": ["./src/utils/*"]
+      "@Utils/*": ["./src/utils/*"],
+      "@Service/*": ["./src/service/*"]
     }
   },
   "include": [".eslintrc.cjs", "src"],
