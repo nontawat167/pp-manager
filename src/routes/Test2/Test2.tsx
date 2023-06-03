@@ -1,7 +1,6 @@
 import { Container } from '@mantine/core';
 
-import { useInvoker } from '@Service/hooks/ipc';
-import { Sku } from '@Service/types/sku';
+import { useAllSKU } from '@Service/hooks/sku';
 import TableLists from './TableLists';
 
 // const elements = [
@@ -24,7 +23,7 @@ import TableLists from './TableLists';
 // ];
 
 const Test2 = () => {
-  const [{ response }] = useInvoker<Sku[]>('get_skus');
+  const [{ response }] = useAllSKU();
 
   return (
     <>

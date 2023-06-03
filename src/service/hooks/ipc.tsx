@@ -1,12 +1,12 @@
 import { invokeCommand } from '@Service/core';
 import { useState, useEffect, useCallback } from 'react';
 
-interface Options {
+export interface UseInvokerOptions {
   autoInvoke: boolean;
 }
 
 type InvokeFn = () => Promise<void>;
-type UseInvokerResponse<T> = [
+export type UseInvokerResponse<T> = [
   { response: T | null; error: string | null; loading: boolean },
   InvokeFn
 ];
@@ -16,14 +16,14 @@ const initValue = {
   error: null,
 };
 
-const defaultOptions: Options = {
+const defaultOptions: UseInvokerOptions = {
   autoInvoke: true,
 };
 
 export function useInvoker<T>(
   command: string,
   params?: any,
-  opts?: Options
+  opts?: UseInvokerOptions
 ): UseInvokerResponse<T> {
   const [response, setResponse] = useState<IpcResponse<T>>(initValue);
   const [loading, setLoading] = useState(false);
