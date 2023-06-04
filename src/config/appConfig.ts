@@ -5,7 +5,10 @@ const config = {
     hostname: ['tauri.localhost', 'localhost'],
   },
   initPath: '/test2',
-  dateFormat:'LLLL'
+  dateFormat: 'LLLL',
+  modal: {
+    zIndex: 1001,
+  },
 };
 
 export default config;
