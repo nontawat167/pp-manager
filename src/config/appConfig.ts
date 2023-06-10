@@ -4,8 +4,11 @@ const config = {
     enabled: false,
     hostname: ['tauri.localhost', 'localhost'],
   },
-  initPath: '/test',
+  initPath: '/test2',
   dateFormat: 'LLLL',
+  modal: {
+    zIndex: 1001,
+  },
 };
 
 export default config;
