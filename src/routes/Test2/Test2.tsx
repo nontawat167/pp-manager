@@ -1,9 +1,9 @@
-import { Button, Container, Flex, Paper } from '@mantine/core';
+import { Button, Flex, Paper } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { useSearchSkus } from '@Service/hooks/sku';
 import { OrderFilter, QueryOrder } from '@Utils/Order';
-import ModalInsertSKU from './ModalInsertSKU';
+import ModalInsertSKU from './ModalUpsertSKU';
 import TableLists from './TableLists';
 
 const Test2 = () => {
@@ -33,4 +33,3 @@ const Test2 = () => {
 };
 
 export default Test2;
->>>>>>> b0d6549 (add modal insertSKU)

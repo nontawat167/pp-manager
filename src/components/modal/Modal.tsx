@@ -7,11 +7,9 @@ const Modal = ({ children, ...otherProps }: PropsWithChildren<ModalProps>) => {
     modal: { zIndex },
   } = useAppConfig();
   return (
-    <>
-      <MantineModal {...otherProps} centered zIndex={zIndex}>
-        {children}
-      </MantineModal>
-    </>
+    <MantineModal {...otherProps} centered zIndex={zIndex}>
+      {children}
+    </MantineModal>
   );
 };
 

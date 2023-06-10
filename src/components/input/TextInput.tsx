@@ -16,7 +16,7 @@ const TextInput = (props: TextInputProps) => {
 
   return (
     <MantineInput
-      my="md"
+      h={82}
       {...otherProps}
       {...register(name, registerOptions)}
       error={errors[name]?.message as string}
