@@ -1,44 +1,36 @@
-import { Container } from '@mantine/core';
+import { Button, Container, Flex, Paper } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { useSearchSkus } from '@Service/hooks/sku';
 import { OrderFilter, QueryOrder } from '@Utils/Order';
+import ModalInsertSKU from './ModalInsertSKU';
 import TableLists from './TableLists';
-
-// const elements = [
-//   {
-//     id: '12',
-//     createdAt: '2023-05-27 08:55:06',
-//     updateAt: '2023-05-27 08:55:06',
-//     name: 'พิทักษ์พงศ์1',
-//     price: 99,
-//     type: 'อะไหล่อ่ะ',
-//   },
-//   {
-//     id: '13',
-//     createdAt: '2023-05-27 08:59:38',
-//     updateAt: '2023-05-27 08:59:38',
-//     name: 'พิทักษ์พงศ์2',
-//     price: 99,
-//     type: 'อะไหล่อ่ะ',
-//   },
-// ];
 
 const Test2 = () => {
   const [{ response }] = useSearchSkus({
     order: new OrderFilter('created_at', QueryOrder.DESC),
   });
-
+  const [opened, { open, close }] = useDisclosure(false);
   return (
     <>
       <h1>รายการคลังสินค้า</h1>
-      <Container
-        fluid
-        sx={{ backgroundColor: 'white', borderRadius: 5, width: '100%' }}
+
+      <Flex
+        mih={50}
+        justify="flex-end"
+        align="center"
+        direction="row"
+        wrap="nowrap"
       >
+        <Button onClick={open}>เพิ่ม</Button>
+      </Flex>
+      <Paper shadow="xs" radius="md" p="md" mt="md">
         <TableLists elements={response?.skus ?? []} />
-      </Container>
+      </Paper>
+      <ModalInsertSKU close={close} opened={opened} />
     </>
   );
 };
 
 export default Test2;
+>>>>>>> b0d6549 (add modal insertSKU)
