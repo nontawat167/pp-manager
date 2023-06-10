@@ -4,8 +4,8 @@ const config = {
     enabled: false,
     hostname: ['tauri.localhost', 'localhost'],
   },
-  initPath: '/test2',
-  dateFormat:'LLLL'
+  initPath: '/test',
+  dateFormat: 'LLLL',
 };
 
 export default config;
