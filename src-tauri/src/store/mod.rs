@@ -1,5 +1,7 @@
-mod database;
+pub mod database;
 mod sku;
+pub mod schema;
 
-pub use database::*;
-pub use sku::*;
+trait Store<T> {
+    fn find() -> T;
+}

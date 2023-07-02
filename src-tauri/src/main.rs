@@ -2,19 +2,25 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod command;
+mod error;
+mod ipc;
+mod model;
 mod store;
 mod tauriop;
-mod ipc;
-mod error;
 mod usecase;
-mod model;
-
+use diesel::prelude::*;
 pub use error::{Error, Result};
-use store::prepare_database;
+use model::SKUModel;
+use store::database::Database;
+use store::schema::skus::dsl::*;
 use tauriop::create_builder;
 
 fn main() {
-    prepare_database().unwrap();
+    let mut db = Database::new(String::from("D:\\test.db"));
+    let sks = skus.load::<SKUModel>(&mut db.connection).expect("error");
+    for s in sks.into_iter() {
+        println!("{:?}", s)
+    }
     let tauri_builder = create_builder();
     tauri_builder
         .run(tauri::generate_context!())

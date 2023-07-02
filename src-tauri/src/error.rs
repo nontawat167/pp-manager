@@ -2,19 +2,12 @@ pub type Result<T> = core::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
-    SqlError(rusqlite::Error),
     IO(std::io::Error),
 }
 
 impl From<std::io::Error> for Error {
     fn from(val: std::io::Error) -> Self {
         Error::IO(val)
-    }
-}
-
-impl From<rusqlite::Error> for Error {
-    fn from(val: rusqlite::Error) -> Self {
-        Error::SqlError(val)
     }
 }
 
