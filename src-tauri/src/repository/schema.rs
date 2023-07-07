@@ -3,10 +3,11 @@
 diesel::table! {
     skus (id) {
         id -> Text,
-        createdAt -> Timestamp,
-        updatedAt -> Timestamp,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        deleted_at -> Nullable<Timestamp>,
         name -> Text,
         price -> Integer,
-        productType -> Text,
+        product_type -> Text,
     }
 }
