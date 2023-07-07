@@ -1,42 +1,36 @@
-use rusqlite::{params, Connection, Result};
-use uuid::Uuid;
+use diesel::prelude::*;
+use diesel::sqlite::Sqlite;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
-pub fn prepare_database() -> Result<()> {
-    open_close_connection(|conn| {
-        let sql = "CREATE TABLE IF NOT EXISTS sku (
-            id varchar(40) not null unique primary key,
-            createdAt DATETIME not null,
-            updatedAt DATETIME not null,
-            name text not null,
-            price int not null,
-            type varchar(10) not null
-        )"
-        .to_string();
-        conn.execute(&sql, ())?;
+use crate::error;
+use error::Result;
 
-        let id = Uuid::new_v4();
-        conn.execute(
-            "INSERT INTO sku (id, createdAt, updatedAt, name, price, type) 
-        values (?1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?2, ?3, ?4);",
-            params![
-                id.to_string(),
-                String::from("testname"),
-                100i32,
-                String::from("MAX")
-            ],
-        )?;
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
 
-        Ok(())
-    })?;
-    Ok(())
+pub struct DatabaseContext {
+    url: String,
 }
 
-pub fn open_close_connection<T, CB>(cb: CB) -> Result<T>
-where
-    CB: Fn(&Connection) -> Result<T>,
-{
-    let conn = Connection::open("D:\\test.db")?;
-    let result = cb(&conn);
-    conn.close().ok();
-    result
+impl DatabaseContext {
+    pub fn new(url: String) -> Self {
+        Self { url }
+    }
+
+    pub fn run_migrations(connection: &mut impl MigrationHarness<Sqlite>) -> Result<()> {
+        let versions = connection.run_pending_migrations(MIGRATIONS).unwrap();
+        println!("Running migration...");
+        for version in versions.into_iter() {
+            println!("migrated: {}", version)
+        }
+
+        Ok(())
+    }
+
+    pub fn establish_connection(&self) -> SqliteConnection {
+        //diesel migration run --database-url=D:\\test.db
+        // let database_url = "D:\\test.db";
+        let database_url = self.url.clone();
+        SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+    }
 }

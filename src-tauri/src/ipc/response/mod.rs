@@ -1,12 +1,16 @@
 use crate::Result;
 use serde::Serialize;
 
-#[derive(Serialize)]
+mod sku;
+
+pub use sku::*;
+
+#[derive(Serialize, Debug)]
 struct IpcError {
     message: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct IpcResult<D>
 where
     D: Serialize,
@@ -14,7 +18,7 @@ where
     pub data: D,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct IpcResponse<D>
 where
     D: Serialize,
