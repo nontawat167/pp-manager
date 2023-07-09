@@ -15,67 +15,6 @@ import { OrderFilter, QueryOrder } from '@Utils/Order';
 import ModalInsertSKU from './ModalUpsertSKU';
 import TableLists from './TableLists';
 
-const defaultFilter: SearchFilter<Partial<SKUSearchInput>> = {
-  search: {},
-  paging: {
-    pageSize: 10,
-    page: 0,
-  },
-  order: {
-    field: 'updatedAt',
-    orderBy: 'ASC',
-  },
-};
-
-interface SearchFilter<T> {
-  search?: T;
-  paging?: {
-    pageSize: number;
-    page: number;
-  };
-  order?: {
-    field: string;
-    orderBy: 'ASC' | 'DESC';
-  };
-}
-
-interface SKUSearchInput {
-  productName: string;
-  productType: string;
-}
-
-interface SearchResult<T> {
-  total: number;
-  result: T[];
-}
-
-const getData = (
-  filter: SearchFilter<Partial<SKUSearchInput>>
-): SearchResult<any> => {
-  return { total: 10, result: [] };
-};
-
-interface TosearchFilterInput {
-  search: Partial<SKUSearchInput>;
-  page: number;
-}
-
-const toSearchFilter = (searchValiables: TosearchFilterInput) => {
-  const { search, page } = searchValiables;
-  const searchFilter: SearchFilter<Partial<SKUSearchInput>> = {
-    search,
-    paging: {
-      pageSize: 10,
-      page,
-    },
-    order: {
-      field: 'updatedAt',
-      orderBy: 'ASC',
-    },
-  };
-  return searchFilter;
-};
-
 const Test2 = () => {
   const form = useForm({
     initialValues: {
@@ -83,34 +22,44 @@ const Test2 = () => {
       productType: '',
     },
   });
-  const [{ response }] = useSearchSkus({
+  const [{ response }, refetchSkus] = useSearchSkus({
     order: new OrderFilter('created_at', QueryOrder.DESC),
   });
   const [opened, { open, close }] = useDisclosure(false);
+  const totalRows = response?.total ?? 0;
+  const rowPerPage = 10;
+  const totalPage = Math.ceil(totalRows / rowPerPage);
   const { active: actionPage, setPage } = usePagination({
-    total: 10,
+    total: totalPage,
     initialPage: 1,
   });
 
   const clearSearch = () => {
     form.reset();
   };
-  const handleSearch = () => {
+  const handleSearch = (event: any) => {
+    event.preventDefault();
     const search = { ...form.values };
-    const searchFilter: SearchFilter<Partial<SKUSearchInput>> = toSearchFilter({
-      search,
-      page: actionPage,
+    const { productName, productType } = search;
+    refetchSkus({
+      name: productName !== '' ? productName : undefined,
+      product_type: productType !== '' ? productType : undefined,
+      order: new OrderFilter('created_at', QueryOrder.DESC),
     });
-    const result = getData(searchFilter);
   };
   const handleChangPage = (page: number) => {
     const search = { ...form.values };
-    const searchFilter: SearchFilter<Partial<SKUSearchInput>> = toSearchFilter({
-      search,
+    const { productName, productType } = search;
+    refetchSkus({
+      name: productName !== '' ? productName : undefined,
+      product_type: productType !== '' ? productType : undefined,
+      order: new OrderFilter('created_at', QueryOrder.DESC),
       page,
     });
     setPage(page);
-    const result = getData(searchFilter);
+  };
+  const reFetch = () => {
+    refetchSkus();
   };
   return (
     <>
@@ -160,12 +109,12 @@ const Test2 = () => {
         <Pagination
           value={actionPage}
           onChange={handleChangPage}
-          total={10}
+          total={totalPage}
           size="md"
           mt="md"
         />
       </Flex>
-      <ModalInsertSKU close={close} opened={opened} />
+      <ModalInsertSKU onSubmit={reFetch} close={close} opened={opened} />
     </>
   );
 };

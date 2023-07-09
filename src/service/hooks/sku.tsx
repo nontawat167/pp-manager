@@ -11,10 +11,9 @@ export const useSearchSkus = (
   searchInput: SearchSkusInput,
   opts?: UseInvokerOptions
 ): UseInvokerResponse<SearchSkusInput, SkuSearchResponse> => {
-  const { order } = searchInput;
   const result = useInvoker<SearchSkusInput, SkuSearchResponse>(
     Query.SEARCH_SKUS,
-    { ...searchInput, order: order?.toString() },
+    searchInput,
     opts
   );
 
@@ -22,7 +21,7 @@ export const useSearchSkus = (
 };
 
 export const useCreateSku = (
-  createSkuInput: CreateSkuInput,
+  createSkuInput: Partial<CreateSkuInput>,
   opts?: UseInvokerOptions
 ): UseInvokerResponse<CreateSkuInput, Sku> => {
   const result = useInvoker<CreateSkuInput, Sku>(

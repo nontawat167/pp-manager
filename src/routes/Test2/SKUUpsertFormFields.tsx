@@ -1,11 +1,7 @@
 import TextInput from '@Components/input/TextInput';
 import NumberInput from '@Components/input/NumberInput';
-import { useFormContext } from 'react-hook-form';
-import { SKUUpsertFormInput } from './SKUUpsertFormContext';
 
 const SKUUpertFormFields = () => {
-  const { watch } = useFormContext<SKUUpsertFormInput>();
-  const formValues = watch();
   return (
     <>
       <TextInput

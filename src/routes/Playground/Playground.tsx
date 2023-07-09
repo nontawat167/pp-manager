@@ -12,86 +12,6 @@ const data = [
     productName: 'test1',
     productType: 'testType1',
   },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
-  {
-    id: '3',
-    productName: 'test2',
-    productType: 'testType2',
-  },
 ];
 
 const columns = [
@@ -101,10 +21,6 @@ const columns = [
   },
   {
     header: 'ประเภทสินค้า',
-    field: 'productType',
-  },
-  {
-    header: 'วันที่',
     field: 'productType',
   },
 ];

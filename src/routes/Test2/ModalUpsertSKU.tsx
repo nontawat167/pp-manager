@@ -1,6 +1,7 @@
 import Modal from '@Components/modal/Modal';
 import ModalFormSubmissionButton from '@Components/modal/ModalFormSubmissionButton';
 import { Box } from '@mantine/core';
+import { useCreateSku } from '@Service/hooks/sku';
 import {
   SKUUpsertFormProvider,
   SKUUpsertFormInput,
@@ -10,11 +11,19 @@ import SKUUpertFormFields from './SKUUpsertFormFields';
 interface ModalUpsert {
   opened: boolean;
   close: () => void;
+  onSubmit: () => void;
 }
 
-const ModalUpsertSKU = ({ opened, close }: ModalUpsert) => {
+const ModalUpsertSKU = ({ opened, close, onSubmit }: ModalUpsert) => {
+  const [, createSku] = useCreateSku({}, { autoInvoke: false });
   const handleSubmit = (data: SKUUpsertFormInput) => {
-    console.log(data);
+    const { name, price, type } = data;
+    createSku({
+      name,
+      price: Number(price),
+      product_type: type,
+    });
+    onSubmit();
     close();
   };
 
