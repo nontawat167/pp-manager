@@ -1,17 +1,17 @@
 use std::sync::Arc;
 
-use async_trait::async_trait;
 use diesel::prelude::*;
 use diesel::ExpressionMethods;
-use tokio::sync::Mutex;
 
 use crate::domain::sku::Sku;
+use crate::domain::NEW_ENTITY_ID;
 use crate::error::Result;
 use crate::port::input::SearchOperator;
 use crate::port::repostiory::SkuRepository;
 use crate::port::response::SearchResult;
 use crate::port::sku::SkuOrderBy;
 use crate::port::sku::SkuSearchInput;
+use crate::port::sku::SqlOrder;
 use crate::repository::schema::skus;
 use crate::repository::schema::skus::*;
 use crate::store::database::DatabaseContext;
@@ -19,11 +19,11 @@ use crate::utils::generate_uuid;
 use crate::utils::get_timestamp;
 
 pub struct SkuRepositoryImpl {
-    db_context: Arc<Mutex<DatabaseContext>>,
+    db_context: Arc<DatabaseContext>,
 }
 
 impl SkuRepositoryImpl {
-    pub fn new(db_context: Arc<Mutex<DatabaseContext>>) -> Self {
+    pub fn new(db_context: Arc<DatabaseContext>) -> Self {
         Self { db_context }
     }
 }
@@ -68,11 +68,10 @@ impl SkuRepositoryImpl {
         search_input: &'a SkuSearchInput,
     ) -> skus::BoxedQuery<'a, diesel::sqlite::Sqlite> {
         let mut new_query = query;
-        if let Some(page) = search_input.page {
-            let per_page = search_input.per_page.unwrap_or(10);
-            let offset = (page - 1) * per_page;
-            new_query = new_query.offset(offset as i64).limit(per_page as i64);
-        }
+        let page: u32 = search_input.page.unwrap_or(1);
+        let per_page = search_input.per_page.unwrap_or(10);
+        let offset = (page - 1) * per_page;
+        new_query = new_query.offset(offset as i64).limit(per_page as i64);
         new_query
     }
 
@@ -84,21 +83,29 @@ impl SkuRepositoryImpl {
 
         if let Some(order_by) = &search_input.order_by {
             match order_by {
-                SkuOrderBy::CreatedAt => new_query = new_query.order(created_at),
-                SkuOrderBy::UpdatedAt => new_query = new_query.order(updated_at),
+                SkuOrderBy::CreatedAt(SqlOrder::ASC) => {
+                    new_query = new_query.order(created_at.asc())
+                }
+                SkuOrderBy::CreatedAt(SqlOrder::DESC) => {
+                    new_query = new_query.order(created_at.desc())
+                }
+                SkuOrderBy::UpdatedAt(SqlOrder::ASC) => {
+                    new_query = new_query.order(updated_at.asc())
+                }
+                SkuOrderBy::UpdatedAt(SqlOrder::DESC) => {
+                    new_query = new_query.order(updated_at.desc())
+                }
             }
         }
         new_query
     }
 }
 
-#[async_trait]
 impl SkuRepository for SkuRepositoryImpl {
-    async fn save(&self, sku: &mut Sku) -> Result<()> {
-        let db = self.db_context.lock().await;
-        let mut connection = db.establish_connection();
+    fn save(&self, sku: &mut Sku) -> Result<()> {
+        let mut connection = self.db_context.establish_connection();
 
-        let result = if String::from("new-entity").eq(sku.id()) {
+        let result = if String::from(NEW_ENTITY_ID).eq(sku.id()) {
             diesel::insert_into(table)
                 .values((
                     id.eq(generate_uuid()),
@@ -129,9 +136,8 @@ impl SkuRepository for SkuRepositoryImpl {
         }
     }
 
-    async fn find(&self, search_input: SkuSearchInput) -> Result<SearchResult<Sku>> {
-        let db = self.db_context.lock().await;
-        let mut connection = db.establish_connection();
+    fn find(&self, search_input: SkuSearchInput) -> Result<SearchResult<Sku>> {
+        let mut connection = self.db_context.establish_connection();
         let mut query = table.into_boxed();
         let mut count_query = table.into_boxed();
 
@@ -140,8 +146,6 @@ impl SkuRepository for SkuRepositoryImpl {
         query = Self::apply_ordering(query, &search_input);
 
         count_query = Self::apply_search_filters(count_query, &search_input);
-        count_query = Self::apply_paging(count_query, &search_input);
-        count_query = Self::apply_ordering(count_query, &search_input);
 
         let amount = count_query
             .count()

@@ -1,27 +1,35 @@
+use std::sync::Arc;
+
+use tokio::sync::Mutex;
+
 use crate::domain::sku::Sku;
+use crate::error::Result;
 use crate::ipc::sku::{CreateSkuInput, SearchSkusInput};
-use crate::ipc::{IpcResponse, SkuSearchResponse};
+use crate::ipc::SkuSearchResponse;
 use crate::port::input::SearchOperator;
 use crate::port::repostiory::SkuRepository;
-use crate::port::sku::SkuSearchInput;
+use crate::port::sku::{SkuSearchInput, SqlOrder};
 use crate::port::SkuOrderBy;
 
 pub struct SkuUseCase {
-    sku_repo: Box<dyn SkuRepository>,
+    sku_repo: Arc<Mutex<Arc<dyn SkuRepository>>>,
 }
 
 impl SkuUseCase {
-    pub fn new(sku_repo: Box<dyn SkuRepository>) -> Self {
-        Self { sku_repo }
+    pub fn new(sku_repo: Arc<Mutex<Arc<dyn SkuRepository>>>) -> Self {
+        Self {
+            sku_repo: sku_repo.clone(),
+        }
     }
 
-    pub async fn create_sku(&self, input: CreateSkuInput) -> IpcResponse<Sku> {
+    pub async fn create_sku(&self, input: CreateSkuInput) -> Result<Sku> {
         let mut sku = Sku::new(input.name, input.price, input.product_type);
-        let _ = self.sku_repo.save(&mut sku).await;
-        Ok(sku).into()
+        let sku_repo = self.sku_repo.lock().await;
+        let _ = sku_repo.save(&mut sku);
+        Ok(sku)
     }
 
-    pub async fn search_skus(&self, input: SearchSkusInput) -> IpcResponse<SkuSearchResponse> {
+    pub async fn search_skus(&self, input: SearchSkusInput) -> Result<SkuSearchResponse> {
         let mut search = SkuSearchInput::default();
 
         if let Some(n) = input.name {
@@ -41,22 +49,24 @@ impl SkuUseCase {
             search.per_page = Some(p)
         }
 
-        if let Some(o) = input.order_by {
+        if let Some(o) = input.order {
             match &o[..] {
-                "created_at" => search.order_by = Some(SkuOrderBy::CreatedAt),
-                "updated_at" => search.order_by = Some(SkuOrderBy::UpdatedAt),
+                "created_at:ASC" => search.order_by = Some(SkuOrderBy::CreatedAt(SqlOrder::ASC)),
+                "created_at:DESC" => search.order_by = Some(SkuOrderBy::CreatedAt(SqlOrder::DESC)),
+                "updated_at:ASC" => search.order_by = Some(SkuOrderBy::UpdatedAt(SqlOrder::ASC)),
+                "updated_at:DESC" => search.order_by = Some(SkuOrderBy::UpdatedAt(SqlOrder::DESC)),
                 _ => {}
             }
         }
 
-        let search_result = self.sku_repo.find(search).await;
+        let sku_repo = self.sku_repo.lock().await;
+        let search_result = sku_repo.find(search);
         match search_result {
             Ok(rs) => {
                 return Ok(SkuSearchResponse {
                     total: rs.total,
                     skus: rs.items,
                 })
-                .into()
             }
             Err(err) => return Err(format!("usecase Error: {}", err).into()).into(),
         };

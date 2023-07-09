@@ -1,9 +1,8 @@
 import MainLayout from '@Components/layout/MainLayout';
 import { MantineProvider } from '@mantine/core';
 import { MemoryRouter } from 'react-router-dom';
-import AppConfigProvider from './config/ConfigContext';
+import AppConfigProvider, { useAppConfig } from './config/ConfigContext';
 import Routes from './routes/AppRoutes';
-import { useAppConfig } from './config/ConfigContext';
 
 const App = () => {
   const { initPath } = useAppConfig();

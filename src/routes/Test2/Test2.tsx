@@ -1,6 +1,7 @@
 import { Container } from '@mantine/core';
 
-import { useAllSKU } from '@Service/hooks/sku';
+import { useSearchSkus } from '@Service/hooks/sku';
+import { OrderFilter, QueryOrder } from '@Utils/Order';
 import TableLists from './TableLists';
 
 // const elements = [
@@ -23,7 +24,9 @@ import TableLists from './TableLists';
 // ];
 
 const Test2 = () => {
-  const [{ response }] = useAllSKU();
+  const [{ response }] = useSearchSkus({
+    order: new OrderFilter('created_at', QueryOrder.DESC),
+  });
 
   return (
     <>
@@ -32,7 +35,7 @@ const Test2 = () => {
         fluid
         sx={{ backgroundColor: 'white', borderRadius: 5, width: '100%' }}
       >
-        <TableLists elements={response} />
+        <TableLists elements={response?.skus ?? []} />
       </Container>
     </>
   );

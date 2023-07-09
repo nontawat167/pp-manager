@@ -1,14 +1,14 @@
 import { invokeCommand } from '@Service/core';
+import { Mutation, Query } from '@Service/types';
 import { useState, useEffect, useCallback } from 'react';
 
 export interface UseInvokerOptions {
   autoInvoke: boolean;
 }
 
-type InvokeFn = () => Promise<void>;
-export type UseInvokerResponse<T> = [
-  { response: T | null; error: string | null; loading: boolean },
-  InvokeFn
+export type UseInvokerResponse<I, R> = [
+  { response: R | null; error: string | null; loading: boolean },
+  (input?: I) => Promise<void>
 ];
 
 const initValue = {
@@ -20,18 +20,19 @@ const defaultOptions: UseInvokerOptions = {
   autoInvoke: true,
 };
 
-export function useInvoker<T>(
-  command: string,
-  params?: any,
+export function useInvoker<I, R>(
+  command: Query | Mutation,
+  params?: I | any,
   opts?: UseInvokerOptions
-): UseInvokerResponse<T> {
-  const [response, setResponse] = useState<IpcResponse<T>>(initValue);
+): UseInvokerResponse<I, R> {
+  const [response, setResponse] = useState<IpcResponse<R>>(initValue);
   const [loading, setLoading] = useState(false);
   const options = { ...defaultOptions, ...opts };
 
-  const invokeFn = useCallback(async () => {
+  const invokeFn = useCallback(async (invokeInput?: I) => {
     setLoading(true);
-    const res = await invokeCommand<T>(command, params);
+    const input = invokeInput ?? params;
+    const res = await invokeCommand<R>(command, input as any);
     setResponse(res);
     setLoading(false);
   }, []);

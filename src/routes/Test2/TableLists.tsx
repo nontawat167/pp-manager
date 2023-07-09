@@ -25,9 +25,9 @@ const TableLists = ({ elements }: Prop) => {
           <tr key={element.id}>
             <td>{element.name}</td>
             <td>{Number(element.price)}</td>
-            <td>{element.type}</td>
-            <td>{dateParse(element.createdAt, dateFormat)}</td>
-            <td>{dateParse(element.updatedAt, dateFormat)}</td>
+            <td>{element.product_type}</td>
+            <td>{dateParse(element.created_at, dateFormat)}</td>
+            <td>{dateParse(element.updated_at, dateFormat)}</td>
           </tr>
         ));
 

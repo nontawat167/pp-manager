@@ -24,7 +24,12 @@ impl Default for SkuSearchInput {
     }
 }
 
+pub enum SqlOrder {
+    ASC,
+    DESC,
+}
+
 pub enum SkuOrderBy {
-    CreatedAt,
-    UpdatedAt,
+    CreatedAt(SqlOrder),
+    UpdatedAt(SqlOrder),
 }

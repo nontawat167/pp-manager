@@ -13,55 +13,33 @@ mod tauriop;
 mod usecase;
 mod utils;
 
+use std::sync::Arc;
+
 pub use error::{Error, Result};
 use infra::sku::SkuRepositoryImpl;
-use ipc::sku::CreateSkuInput;
-use std::sync::Arc;
+use port::repostiory::SkuRepository;
+// use ipc::sku::CreateSkuInput;
 use store::database::DatabaseContext;
 use tauri::async_runtime::Mutex;
 use tauriop::create_builder;
 use usecase::SkuUseCase;
 
-use crate::ipc::sku::SearchSkusInput;
+// use crate::ipc::sku::SearchSkusInput;
 
 #[tokio::main]
 async fn main() {
     let db = DatabaseContext::new(String::from("D:\\test.db"));
     let _ = DatabaseContext::run_migrations(&mut db.establish_connection());
-    let db_context = Arc::new(Mutex::new(db));
+    let db_context = Arc::new(db);
 
-    let sku_repo = Box::new(SkuRepositoryImpl::new(Arc::clone(&db_context)));
-    let sku_usecase = SkuUseCase::new(sku_repo);
+    let sku_repo: Arc<dyn SkuRepository> =
+        Arc::new(SkuRepositoryImpl::new(Arc::clone(&db_context)));
+    let sku_repo_mutex = Arc::new(Mutex::new(sku_repo));
+    let sku_usecase = Arc::new(SkuUseCase::new(Arc::clone(&sku_repo_mutex)));
 
-    let mock_input = CreateSkuInput {
-        name: "test_name2".to_owned(),
-        price: 30,
-        product_type: "TEST_TYPE".to_owned(),
-    };
-
-    let _ = &sku_usecase.create_sku(mock_input).await;
-
-    // println!("{:?}", result);
-
-    let mock_search = SearchSkusInput {
-        name: Some("test_name2".to_owned()),
-        price: None,
-        product_type: None,
-
-        page: None,
-        per_page: None,
-        order_by: None,
-    };
-    let search = &sku_usecase.search_skus(mock_search).await;
-    println!("{:?}", search);
-
-    // let res = store.find().await;
-    // let sks = res.unwrap();
-    // for s in sks.into_iter() {
-    //     println!("{:?}", s)
-    // }
     let tauri_builder = create_builder();
     tauri_builder
+        .manage(sku_usecase)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
