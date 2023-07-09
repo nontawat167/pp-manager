@@ -1,5 +1,5 @@
-import moment from "moment";
+import moment from 'moment';
 
-export const dateParse =(date:string, format:string)=>{
-    return moment(date).format(format);
-}
+export const dateParse = (date: string, format: string) => {
+  return moment(date).format(format);
+};

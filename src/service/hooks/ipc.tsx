@@ -1,5 +1,6 @@
 import { invokeCommand } from '@Service/core';
 import { Mutation, Query } from '@Service/types';
+import { IpcResponse } from '@Service/types/common';
 import { useState, useEffect, useCallback } from 'react';
 
 export interface UseInvokerOptions {
@@ -31,7 +32,10 @@ export function useInvoker<I, R>(
 
   const invokeFn = useCallback(async (invokeInput?: I) => {
     setLoading(true);
-    const input = invokeInput ?? params;
+    const rawInput = (invokeInput ?? params) as any;
+    const input = rawInput?.order
+      ? { ...rawInput, order: rawInput.order?.toString() }
+      : rawInput;
     const res = await invokeCommand<R>(command, input as any);
     setResponse(res);
     setLoading(false);

@@ -1,4 +1,5 @@
 import { InvokeArgs, invoke } from '@tauri-apps/api/tauri';
+import { IpcResponse } from './types/common';
 
 export async function invokeCommand<T>(
   command: string,

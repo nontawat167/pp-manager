@@ -13,4 +13,10 @@ export const navlist = [
     path: '/test2',
     icon: IconReceipt2,
   },
+  {
+    label: 'Playground',
+    title: 'Playground',
+    path: '/playground',
+    icon: IconReceipt2,
+  },
 ];

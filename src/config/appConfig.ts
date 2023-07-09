@@ -4,7 +4,7 @@ const config = {
     enabled: false,
     hostname: ['tauri.localhost', 'localhost'],
   },
-  initPath: '/test2',
+  initPath: '/playground',
   dateFormat: 'LLLL',
   modal: {
     zIndex: 1001,
