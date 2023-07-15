@@ -38,7 +38,8 @@ impl SkuRepositoryImpl {
         if let Some(n) = &search_input.name {
             match n {
                 SearchOperator::Equal(search_name) => {
-                    filtered_query = filtered_query.filter(skus::name.eq(search_name));
+                    let search_str = format!("{}{}", search_name, "%");
+                    filtered_query = filtered_query.filter(skus::name.like(search_str));
                 }
             }
         }
