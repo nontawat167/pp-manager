@@ -2,8 +2,10 @@ use crate::Result;
 use serde::Serialize;
 
 mod sku;
+mod tag;
 
 pub use sku::*;
+pub use tag::*;
 
 #[derive(Serialize, Debug)]
 struct IpcError {

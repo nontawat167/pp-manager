@@ -1,16 +1,14 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct CreateSkuInput {
+pub struct CreateTagInput {
     pub name: String,
-    pub price: i32,
-    pub product_type: String,
+    pub kind: String,
+    pub color: String,
 }
 #[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct SearchSkusInput {
-    pub name: Option<String>,
-    pub price: Option<i32>,
-    pub product_type: Option<String>,
+pub struct SearchTagsInput {
+    pub kind: Option<String>,
 
     pub page: Option<u32>,
     pub per_page: Option<u32>,

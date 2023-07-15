@@ -12,9 +12,8 @@ use crate::port::response::SearchResult;
 use crate::port::sku::SkuOrderBy;
 use crate::port::sku::SkuSearchInput;
 use crate::port::sku::SqlOrder;
-use crate::repository::schema::skus;
-use crate::repository::schema::skus::*;
 use crate::store::database::DatabaseContext;
+use crate::store::schema::skus;
 use crate::utils::generate_uuid;
 use crate::utils::get_timestamp;
 
@@ -85,16 +84,16 @@ impl SkuRepositoryImpl {
         if let Some(order_by) = &search_input.order_by {
             match order_by {
                 SkuOrderBy::CreatedAt(SqlOrder::ASC) => {
-                    new_query = new_query.order(created_at.asc())
+                    new_query = new_query.order(skus::created_at.asc())
                 }
                 SkuOrderBy::CreatedAt(SqlOrder::DESC) => {
-                    new_query = new_query.order(created_at.desc())
+                    new_query = new_query.order(skus::created_at.desc())
                 }
                 SkuOrderBy::UpdatedAt(SqlOrder::ASC) => {
-                    new_query = new_query.order(updated_at.asc())
+                    new_query = new_query.order(skus::updated_at.asc())
                 }
                 SkuOrderBy::UpdatedAt(SqlOrder::DESC) => {
-                    new_query = new_query.order(updated_at.desc())
+                    new_query = new_query.order(skus::updated_at.desc())
                 }
             }
         }
@@ -107,26 +106,26 @@ impl SkuRepository for SkuRepositoryImpl {
         let mut connection = self.db_context.establish_connection();
 
         let result = if String::from(NEW_ENTITY_ID).eq(sku.id()) {
-            diesel::insert_into(table)
+            diesel::insert_into(skus::table)
                 .values((
-                    id.eq(generate_uuid()),
-                    created_at.eq(sku.created_at()),
-                    updated_at.eq(sku.updated_at()),
-                    deleted_at.eq(sku.deleted_at()),
-                    name.eq(sku.name()),
-                    price.eq(sku.price()),
-                    product_type.eq(sku.product_type()),
+                    skus::id.eq(generate_uuid()),
+                    skus::created_at.eq(sku.created_at()),
+                    skus::updated_at.eq(sku.updated_at()),
+                    skus::deleted_at.eq(sku.deleted_at()),
+                    skus::name.eq(sku.name()),
+                    skus::price.eq(sku.price()),
+                    skus::product_type.eq(sku.product_type()),
                 ))
                 .execute(&mut connection)
         } else {
-            diesel::update(table.filter(id.eq(sku.id())))
+            diesel::update(skus::table.filter(skus::id.eq(sku.id())))
                 .set((
-                    created_at.eq(sku.created_at()),
-                    updated_at.eq(get_timestamp()),
-                    deleted_at.eq(sku.deleted_at()),
-                    name.eq(sku.name()),
-                    price.eq(sku.price()),
-                    product_type.eq(sku.product_type()),
+                    skus::created_at.eq(sku.created_at()),
+                    skus::updated_at.eq(get_timestamp()),
+                    skus::deleted_at.eq(sku.deleted_at()),
+                    skus::name.eq(sku.name()),
+                    skus::price.eq(sku.price()),
+                    skus::product_type.eq(sku.product_type()),
                 ))
                 .execute(&mut connection)
         };
@@ -139,8 +138,8 @@ impl SkuRepository for SkuRepositoryImpl {
 
     fn find(&self, search_input: SkuSearchInput) -> Result<SearchResult<Sku>> {
         let mut connection = self.db_context.establish_connection();
-        let mut query = table.into_boxed();
-        let mut count_query = table.into_boxed();
+        let mut query = skus::table.into_boxed();
+        let mut count_query = skus::table.into_boxed();
 
         query = Self::apply_search_filters(query, &search_input);
         query = Self::apply_paging(query, &search_input);

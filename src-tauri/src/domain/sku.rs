@@ -2,12 +2,15 @@ use derive_getters::Getters;
 use diesel::prelude::*;
 use serde::Serialize;
 
-use crate::repository::schema;
+use crate::store::schema;
 use crate::utils::get_timestamp;
+
+use super::tag::Tag;
 
 use super::NEW_ENTITY_ID;
 
-#[derive(Queryable, Selectable, Serialize, Debug, Getters)]
+#[derive(Queryable, Selectable, Identifiable, Associations, Serialize, Debug, Getters)]
+#[diesel(belongs_to(Tag, foreign_key=product_type))]
 #[diesel(table_name = schema::skus)]
 pub struct Sku {
     id: String,
