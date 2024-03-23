@@ -29,8 +29,7 @@ impl DatabaseContext {
     pub fn establish_connection(&self) -> SqliteConnection {
         //diesel migration run --database-url=D:\\test.db
         // let database_url = "D:\\test.db";
-        let database_url = self.url.clone();
-        SqliteConnection::establish(&database_url)
-            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+        SqliteConnection::establish(&self.url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", &self.url))
     }
 }

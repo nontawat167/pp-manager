@@ -3,7 +3,8 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[derive(Debug)]
 pub enum Error {
     IO(std::io::Error),
-    Custom(String)
+    Custom(String),
+    Migration(String),
 }
 
 impl From<std::io::Error> for Error {

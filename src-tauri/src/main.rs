@@ -7,7 +7,6 @@ mod error;
 mod infra;
 mod ipc;
 mod port;
-mod repository;
 mod store;
 mod tauriop;
 mod usecase;
@@ -20,6 +19,8 @@ use infra::{sku::SkuRepositoryImpl, tag::TagRepositoryImpl};
 use port::repostiory::{SkuRepository, TagRepository};
 // use ipc::sku::CreateSkuInput;
 use store::database::DatabaseContext;
+use store::migrator::Migrator;
+use store::diesel::DieselMigrationEngine;
 use tauri::async_runtime::Mutex;
 use tauriop::create_builder;
 use usecase::{SkuUseCase, TagUseCase};
@@ -28,8 +29,12 @@ use usecase::{SkuUseCase, TagUseCase};
 
 #[tokio::main]
 async fn main() {
+    let engine = DieselMigrationEngine::new(String::from("D:\\test.db"));
+    Migrator::run_migrations(engine).unwrap();
+
+
     let db = DatabaseContext::new(String::from("D:\\test.db"));
-    let _ = DatabaseContext::run_migrations(&mut db.establish_connection());
+    // let _ = DatabaseContext::run_migrations(&mut db.establish_connection());
     let db_context = Arc::new(db);
 
     // init repo
