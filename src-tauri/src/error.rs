@@ -5,6 +5,7 @@ pub enum Error {
     IO(std::io::Error),
     Custom(String),
     Migration(String),
+    Service(String),
 }
 
 impl From<std::io::Error> for Error {

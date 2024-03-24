@@ -7,7 +7,11 @@ pub trait MigrationEngine {
 pub struct Migrator {}
 
 impl Migrator {
-    pub fn run_migrations(engine: impl MigrationEngine) -> Result<()> {
+    pub fn new() -> Self {
+        Migrator{}
+    }
+
+    pub fn run_migrations(&self, engine: impl MigrationEngine) -> Result<()> {
         engine.migrate()
     }
 }
