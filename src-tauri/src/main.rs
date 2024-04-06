@@ -8,8 +8,8 @@ mod error;
 mod infra;
 mod ipc;
 mod port;
-mod service;
 mod repository;
+mod service;
 mod store;
 mod tauriop;
 mod usecase;
@@ -20,18 +20,20 @@ use std::sync::Arc;
 pub use error::{Error, Result};
 use infra::{sku::SkuRepositoryImpl, tag::TagRepositoryImpl};
 use port::repostiory::{SkuRepository, TagRepository};
-use repository::RepoManagerBuider;
+use repository::{RepoManagerBuider, RepoManagerBuider2};
 use service::TagService;
 use store::Store;
 // use ipc::sku::CreateSkuInput;
-use store::{connection::establish_connection, database::DatabaseContext};
 use store::diesel::DieselMigrationEngine;
 use store::migrator::Migrator;
+use store::{connection::establish_connection, database::DatabaseContext};
 use tauri::async_runtime::Mutex;
 use tauriop::create_builder;
 use usecase::{SkuUseCase, TagUseCase};
 
 use repository::TagRepository as TagRepo;
+
+use repository::sqlx::tag::SqlxTagRepository;
 
 // use crate::ipc::sku::SearchSkusInput;
 
@@ -71,13 +73,22 @@ async fn main() {
 
     let app = app::AppContext::new(services);
 
-     /* ------------------------------------ end new dependecies implementation --------------------------------------------------------- */
+    /* ------------------------------------ end new dependecies implementation --------------------------------------------------------- */
+    /* ------------------------------------ start 3rd new dependecies implementation --------------------------------------------------- */
+
+    let url = "sqlite://D:\\test.db";
+    let tag_repo2 = SqlxTagRepository::new(String::from(url.clone()));
+
+    let repositories2 = RepoManagerBuider2::new().tag(tag_repo2).build();
+
+    /* ------------------------------------ start 3rd new dependecies implementation --------------------------------------------------- */
 
     let tauri_builder = create_builder();
     tauri_builder
         .manage(sku_usecase)
         .manage(tag_usecase)
         .manage(app)
+        .manage(repositories2)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

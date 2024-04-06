@@ -7,7 +7,7 @@ use crate::utils::get_timestamp;
 
 use super::tag::Tag;
 
-use super::NEW_ENTITY_ID;
+use super::entity::NEW_ENTITY_ID;
 
 #[derive(Queryable, Selectable, Identifiable, Associations, Serialize, Debug, Getters)]
 #[diesel(belongs_to(Tag, foreign_key=product_type))]

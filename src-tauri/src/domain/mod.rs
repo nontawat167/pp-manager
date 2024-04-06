@@ -1,4 +1,5 @@
+pub mod entity;
 pub mod sku;
 pub mod tag;
+pub mod tags;
 
-pub const NEW_ENTITY_ID: &'static str = "NEW-ENTITY-ID";

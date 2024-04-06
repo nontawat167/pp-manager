@@ -12,7 +12,8 @@ pub fn create_builder() -> Builder<Wry> {
         // tag
         search_tags,
         create_tag,
-        get_all_tag
+        get_all_tag2,
+        get_all_tag,
     ]);
     tauri_builder
 }

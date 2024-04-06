@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use diesel::ExpressionMethods;
 
 use crate::domain::tag::Tag;
-use crate::domain::NEW_ENTITY_ID;
+use crate::domain::entity::NEW_ENTITY_ID;
 use crate::error::Result;
 use crate::port::input::SearchOperator;
 use crate::port::repostiory::TagRepository;
