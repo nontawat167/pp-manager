@@ -15,7 +15,7 @@ interface ModalUpsert {
 }
 
 const ModalUpsertSKU = ({ opened, close, onSubmit }: ModalUpsert) => {
-  const [, createSku] = useCreateSku({}, { autoInvoke: false });
+  const { mutate: createSku } = useCreateSku();
   const handleSubmit = (data: SKUUpsertFormInput) => {
     const { name, price, type } = data;
     createSku({

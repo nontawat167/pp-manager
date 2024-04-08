@@ -8,6 +8,7 @@ pub fn create_builder() -> Builder<Wry> {
         greet,
         // sku
         search_skus,
+        search_skus2,
         create_sku,
         // tag
         search_tags,

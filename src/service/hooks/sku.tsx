@@ -1,34 +1,28 @@
-import {
-  CreateSkuInput,
-  SearchSkusInput,
-  Sku,
-  SkuSearchResponse,
-} from '@Service/types/sku';
+import { CreateSkuInput, Sku, SkuSearchResponse } from '@Service/types/sku';
 import { Query, Mutation } from '@Service/types';
-import { UseInvokerOptions, UseInvokerResponse, useInvoker } from './ipc';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { invokeCommand } from '@Service/core';
 
-export const useSearchSkus = (
-  searchInput: SearchSkusInput,
-  opts?: UseInvokerOptions
-): UseInvokerResponse<SearchSkusInput, SkuSearchResponse> => {
-  const result = useInvoker<SearchSkusInput, SkuSearchResponse>(
-    Query.SEARCH_SKUS,
-    searchInput,
-    opts
-  );
-
-  return result;
+export const useSearchSkus = () => {
+  return useQuery({
+    queryKey: [Query.SEARCH_SKUS_2],
+    queryFn: async () => {
+      const result = await invokeCommand<SkuSearchResponse>(
+        Query.SEARCH_SKUS_2
+      );
+      return result.result?.data;
+    },
+  });
 };
 
-export const useCreateSku = (
-  createSkuInput: Partial<CreateSkuInput>,
-  opts?: UseInvokerOptions
-): UseInvokerResponse<CreateSkuInput, Sku> => {
-  const result = useInvoker<CreateSkuInput, Sku>(
-    Mutation.CREATE_SKU,
-    createSkuInput,
-    opts
-  );
-
-  return result;
+export const useCreateSku = () => {
+  return useMutation({
+    mutationFn: async (createSkuInput: Partial<CreateSkuInput>) => {
+      const result = await invokeCommand<Sku>(
+        Mutation.CREATE_SKU,
+        createSkuInput
+      );
+      return result.result?.data;
+    },
+  });
 };

@@ -22,9 +22,7 @@ const Test2 = () => {
       productType: '',
     },
   });
-  const [{ response }, refetchSkus] = useSearchSkus({
-    order: new OrderFilter('created_at', QueryOrder.DESC),
-  });
+  const { data: response } = useSearchSkus();
   const [opened, { open, close }] = useDisclosure(false);
   const totalRows = response?.total ?? 0;
   const rowPerPage = 10;
@@ -34,6 +32,8 @@ const Test2 = () => {
     initialPage: 1,
   });
 
+  console.log(`data:`, response);
+
   const clearSearch = () => {
     form.reset();
   };
@@ -41,25 +41,25 @@ const Test2 = () => {
     event.preventDefault();
     const search = { ...form.values };
     const { productName, productType } = search;
-    refetchSkus({
-      name: productName !== '' ? productName : undefined,
-      product_type: productType !== '' ? productType : undefined,
-      order: new OrderFilter('created_at', QueryOrder.DESC),
-    });
+    // refetchSkus({
+    //   name: productName !== '' ? productName : undefined,
+    //   product_type: productType !== '' ? productType : undefined,
+    //   order: new OrderFilter('created_at', QueryOrder.DESC),
+    // });
   };
   const handleChangPage = (page: number) => {
     const search = { ...form.values };
     const { productName, productType } = search;
-    refetchSkus({
-      name: productName !== '' ? productName : undefined,
-      product_type: productType !== '' ? productType : undefined,
-      order: new OrderFilter('created_at', QueryOrder.DESC),
-      page,
-    });
+    // refetchSkus({
+    //   name: productName !== '' ? productName : undefined,
+    //   product_type: productType !== '' ? productType : undefined,
+    //   order: new OrderFilter('created_at', QueryOrder.DESC),
+    //   page,
+    // });
     setPage(page);
   };
   const reFetch = () => {
-    refetchSkus();
+    // refetchSkus();
   };
   return (
     <>

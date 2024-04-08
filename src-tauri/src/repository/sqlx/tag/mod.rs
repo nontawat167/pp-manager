@@ -1,10 +1,10 @@
 use async_trait::async_trait;
+use sea_query::{Query, SqliteQueryBuilder};
 use sea_query_binder::SqlxBinder;
 use sqlx::{Pool, Sqlite};
-use sea_query::{Query, SqliteQueryBuilder};
 
-use crate::{domain::tags::Tag, repository::tag::TagRepository1};
 use crate::Result;
+use crate::{domain::tags::Tag, repository::tag::TagRepository1};
 
 use self::entity::{SqlxTag, SqlxTagIden};
 
@@ -28,7 +28,6 @@ impl SqlxTagRepository {
 
 #[async_trait]
 impl TagRepository1 for SqlxTagRepository {
-
     async fn find_all(&self) -> Result<Vec<Tag>> {
         let conn = self.connect().await;
 
@@ -48,7 +47,10 @@ impl TagRepository1 for SqlxTagRepository {
         let tags: Vec<Tag> = sqlx::query_as_with::<_, SqlxTag, _>(&sql, values)
             .fetch_all(&conn)
             .await
-            .unwrap().into_iter().map(|tag| tag.into()).collect();
+            .unwrap()
+            .into_iter()
+            .map(|tag| tag.into())
+            .collect();
 
         Ok(tags)
     }

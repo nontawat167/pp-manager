@@ -1,5 +1,7 @@
-import moment from 'moment';
+import day from 'dayjs';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 
 export const dateParse = (date: string, format: string) => {
-  return moment(date).format(format);
+  day.extend(LocalizedFormat);
+  return day(date).format(format);
 };

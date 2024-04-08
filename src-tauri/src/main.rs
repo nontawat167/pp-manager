@@ -20,6 +20,7 @@ use std::sync::Arc;
 pub use error::{Error, Result};
 use infra::{sku::SkuRepositoryImpl, tag::TagRepositoryImpl};
 use port::repostiory::{SkuRepository, TagRepository};
+use repository::sqlx::sku::SqlxSkuRepository;
 use repository::{RepoManagerBuider, RepoManagerBuider2};
 use service::TagService;
 use store::Store;
@@ -78,8 +79,12 @@ async fn main() {
 
     let url = "sqlite://D:\\test.db";
     let tag_repo2 = SqlxTagRepository::new(String::from(url.clone()));
+    let sku_repo = SqlxSkuRepository::new(String::from(url.clone()));
 
-    let repositories2 = RepoManagerBuider2::new().tag(tag_repo2).build();
+    let repositories2 = RepoManagerBuider2::new()
+        .tag(tag_repo2)
+        .sku(sku_repo)
+        .build();
 
     /* ------------------------------------ start 3rd new dependecies implementation --------------------------------------------------- */
 

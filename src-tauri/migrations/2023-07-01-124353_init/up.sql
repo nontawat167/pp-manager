@@ -13,9 +13,47 @@ CREATE TABLE IF NOT EXISTS skus (
     deleted_at DATETIME default null,
     name text not null,
     price int not null default 0,
-    product_type varchar(30) not null,
-    FOREIGN KEY(product_type) REFERENCES tags(id)
+    product_type varchar(30) not null
+    -- FOREIGN KEY(product_type) REFERENCES tags(id)
 );
+
+INSERT INTO
+    skus (
+        id,
+        created_at,
+        updated_at,
+        name,
+        price,
+        product_type
+    )
+VALUES
+    (
+        '067c68e1-2faf-41c4-85b3-633b4f76c7f5',
+        date('now'),
+        date('now'),
+        'ยางเทพสุดๆ 2024',
+        2000,
+        'ยาง'
+    );
+
+INSERT INTO
+    skus (
+        id,
+        created_at,
+        updated_at,
+        name,
+        price,
+        product_type
+    )
+VALUES
+    (
+        'f5dcebcf-2a5c-421a-8de3-fa5e19c9f414',
+        date('now'),
+        date('now'),
+        'แม็กขอบบาง 2024',
+        4000,
+        'แม็ก'
+    );
 
 INSERT INTO
     tags (id, name, kind, color)
